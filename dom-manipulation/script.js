@@ -1,11 +1,9 @@
 let quotes = [];
 
-
 function loadQuotes() {
     const storedQuotes = JSON.parse(localStorage.getItem('quotes') || '[]');
     quotes = storedQuotes;
 }
-
 
 function saveQuotes() {
     localStorage.setItem('quotes', JSON.stringify(quotes));
@@ -15,7 +13,7 @@ function populateCategories() {
     const categoryFilter = document.getElementById('categoryFilter');
     const categories = [...new Set(quotes.map(quote => quote.category))];
 
-         categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
@@ -26,7 +24,6 @@ function populateCategories() {
     const lastSelectedCategory = localStorage.getItem('lastCategory') || 'all';
     categoryFilter.value = lastSelectedCategory;
 }
-
 
 function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
@@ -44,7 +41,6 @@ function showRandomQuote() {
     quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
 }
 
-
 function addQuote() {
     const quoteText = document.getElementById('newQuoteText').value;
     const quoteCategory = document.getElementById('newQuoteCategory').value;
@@ -53,7 +49,7 @@ function addQuote() {
         alert("Both fields are required!");
         return;
     }
-    
+
     quotes.push({ text: quoteText, category: quoteCategory });
     saveQuotes();
     populateCategories();
@@ -63,10 +59,23 @@ function addQuote() {
     document.getElementById('newQuoteCategory').value = '';
 }
 
+function filterQuotes() {
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    localStorage.setItem('lastCategory', categoryFilter);
+    showRandomQuote();
+}
 
-
-
-
+function exportQuotes() {
+    const dataStr = JSON.stringify(quotes, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     loadQuotes();
