@@ -149,10 +149,15 @@ async function postQuoteToServer(text, category) {
     }
 }
 
+async function syncQuotes() {
+    await fetchQuotesFromServer();
+    await saveQuotes();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     await loadQuotes();
     populateCategories();
     showRandomQuote();
     createAddQuoteForm();
-    await fetchQuotesFromServer();
+    await syncQuotes();
 });
