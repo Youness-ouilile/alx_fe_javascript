@@ -152,6 +152,7 @@ async function postQuoteToServer(text, category) {
 async function syncQuotes() {
     await fetchQuotesFromServer();
     await saveQuotes();
+    alert("Quotes synced with server!"); // Added user feedback
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
