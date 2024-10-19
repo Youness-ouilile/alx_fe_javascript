@@ -41,7 +41,7 @@ function showRandomQuote() {
     quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
 }
 
-function addQuote() {
+async function addQuote() {
     const quoteText = document.getElementById('newQuoteText').value;
     const quoteCategory = document.getElementById('newQuoteCategory').value;
 
@@ -51,7 +51,8 @@ function addQuote() {
     }
 
     quotes.push({ text: quoteText, category: quoteCategory });
-    saveQuotes();
+    await saveQuotes();
+    await postQuoteToServer(quoteText, quoteCategory);
     populateCategories();
     showRandomQuote();
 
@@ -119,16 +120,32 @@ async function fetchQuotesFromServer() {
     try {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
         const serverQuotes = await response.json();
-        
+
         serverQuotes.forEach(quote => {
             quotes.push({ text: quote.title, category: "General" });
         });
 
-        saveQuotes();
+        await saveQuotes();
         populateCategories();
         showRandomQuote();
     } catch (error) {
         console.error('Error fetching quotes from server:', error);
+    }
+}
+
+async function postQuoteToServer(text, category) {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ title: text, category: category })
+        });
+        const result = await response.json();
+        console.log('Quote posted successfully:', result);
+    } catch (error) {
+        console.error('Error posting quote to server:', error);
     }
 }
 
