@@ -1,12 +1,12 @@
 let quotes = [];
 let selectedCategory = 'all';
 
-function loadQuotes() {
+async function loadQuotes() {
     const storedQuotes = JSON.parse(localStorage.getItem('quotes') || '[]');
     quotes = storedQuotes;
 }
 
-function saveQuotes() {
+async function saveQuotes() {
     localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
@@ -115,24 +115,27 @@ function createAddQuoteForm() {
     document.body.appendChild(formContainer);
 }
 
-function fetchQuotesFromServer() {
-    setTimeout(() => {
-        const serverQuotes = [
-            { text: "Life is what happens when you're busy making other plans.", category: "Life" },
-            { text: "The purpose of our lives is to be happy.", category: "Happiness" },
-        ];
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const serverQuotes = await response.json();
+        
+        serverQuotes.forEach(quote => {
+            quotes.push({ text: quote.title, category: "General" });
+        });
 
-        quotes = [...new Set([...quotes, ...serverQuotes])];
         saveQuotes();
         populateCategories();
         showRandomQuote();
-    }, 2000);
+    } catch (error) {
+        console.error('Error fetching quotes from server:', error);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadQuotes();
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadQuotes();
     populateCategories();
     showRandomQuote();
     createAddQuoteForm();
-    fetchQuotesFromServer();
+    await fetchQuotesFromServer();
 });
