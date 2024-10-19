@@ -1,5 +1,5 @@
 let quotes = [];
-let selectedCategory = 'all'; // Initialize the selected category
+let selectedCategory = 'all';
 
 function loadQuotes() {
     const storedQuotes = JSON.parse(localStorage.getItem('quotes') || '[]');
@@ -29,7 +29,6 @@ function populateCategories() {
 
 function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
-
     const filteredQuotes = selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
 
     if (filteredQuotes.length === 0) {
@@ -62,7 +61,7 @@ function addQuote() {
 
 function filterQuotes() {
     const categoryFilter = document.getElementById('categoryFilter').value;
-    selectedCategory = categoryFilter; // Update selectedCategory
+    selectedCategory = categoryFilter;
     localStorage.setItem('lastCategory', selectedCategory);
     showRandomQuote();
 }
@@ -116,9 +115,24 @@ function createAddQuoteForm() {
     document.body.appendChild(formContainer);
 }
 
+function fetchQuotesFromServer() {
+    setTimeout(() => {
+        const serverQuotes = [
+            { text: "Life is what happens when you're busy making other plans.", category: "Life" },
+            { text: "The purpose of our lives is to be happy.", category: "Happiness" },
+        ];
+
+        quotes = [...new Set([...quotes, ...serverQuotes])];
+        saveQuotes();
+        populateCategories();
+        showRandomQuote();
+    }, 2000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadQuotes();
     populateCategories();
     showRandomQuote();
     createAddQuoteForm();
+    fetchQuotesFromServer();
 });
