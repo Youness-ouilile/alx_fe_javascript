@@ -160,4 +160,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     showRandomQuote();
     createAddQuoteForm();
     await syncQuotes();
+
+    setInterval(syncQuotes, 30000); // Sync every 30 seconds
 });
