@@ -1,4 +1,5 @@
 let quotes = [];
+let selectedCategory = 'all'; // Initialize the selected category
 
 function loadQuotes() {
     const storedQuotes = JSON.parse(localStorage.getItem('quotes') || '[]');
@@ -22,14 +23,14 @@ function populateCategories() {
     });
 
     const lastSelectedCategory = localStorage.getItem('lastCategory') || 'all';
-    categoryFilter.value = lastSelectedCategory;
+    selectedCategory = lastSelectedCategory;
+    categoryFilter.value = selectedCategory;
 }
 
 function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
-    const categoryFilter = document.getElementById('categoryFilter').value;
 
-    const filteredQuotes = categoryFilter === 'all' ? quotes : quotes.filter(quote => quote.category === categoryFilter);
+    const filteredQuotes = selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
 
     if (filteredQuotes.length === 0) {
         quoteDisplay.textContent = "No quotes available for this category.";
@@ -61,7 +62,8 @@ function addQuote() {
 
 function filterQuotes() {
     const categoryFilter = document.getElementById('categoryFilter').value;
-    localStorage.setItem('lastCategory', categoryFilter);
+    selectedCategory = categoryFilter; // Update selectedCategory
+    localStorage.setItem('lastCategory', selectedCategory);
     showRandomQuote();
 }
 
